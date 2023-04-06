@@ -35,7 +35,7 @@ public class HttpUtils {
     //GPTAPI Image
     public static final String urlImage = "https://mokjyz.xyz/v1/images/generations";
     // GPT API TOKEN
-    public static final String token = "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" ;
+    public static final String token = "sk-S**" ;
 
     /**
      * 发送post请求给GPT API，接受返回的信息
