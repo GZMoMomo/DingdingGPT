@@ -2,10 +2,13 @@ package com.example.dingding.server.serverImpl;
 
 
 
+import com.example.dingding.utils.Log4j;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,17 +18,12 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class HttpUtils {
-    //HTTP客户端库，可用于向Web服务器发起HTTP请求并处理响应，单例复用实例。
-    private static class HttpClientHolder{
-        private static final OkHttpClient client=new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).protocols(Arrays.asList(Protocol.HTTP_1_1)).build();
 
-    }
+    //HTTP客户端库，可用于向Web服务器发起HTTP请求并处理响应，单例复用实例。
+    private static final OkHttpClient client=new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).protocols(Arrays.asList(Protocol.HTTP_1_1)).build();
 
     //Jackson库中的一个核心类，它提供了序列化和反序列化JSON的功能,单例复用。
-    private static class ObjectMapperHolder{
-        private static final ObjectMapper objectMapper=new ObjectMapper();
-
-    }
+    private static final ObjectMapper objectMapper=new ObjectMapper();
 
     //静态媒体类型，用来描述请求和响应消息的格式和字符集。
     private static final MediaType JSON = MediaType.get("application/json;chartset=utf-8");
@@ -35,7 +33,7 @@ public class HttpUtils {
     //GPTAPI Image
     public static final String urlImage = "https://mokjyz.xyz/v1/images/generations";
     // GPT API TOKEN
-    public static final String token = "sk-S**" ;
+    public static final String token = "sk-*" ;
 
     /**
      * 发送post请求给GPT API，接受返回的信息
@@ -46,7 +44,9 @@ public class HttpUtils {
      * @throws IOException
      */
     public static String post(String url, JSONObject jsonObject , String apiKey) throws IOException {
-        System.out.println(jsonObject.toString());
+        Log4j log=new Log4j();
+        Logger logger=log.log4j();
+        logger.debug("对话api requestBody："+jsonObject.toString());
         RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
         Request request = new Request.Builder()
                 .url(url)
@@ -54,7 +54,7 @@ public class HttpUtils {
                 .addHeader("Authorization", "Bearer "+apiKey)
                 .post(body)
                 .build();
-        try (Response response = HttpClientHolder.client.newCall(request).execute()){
+        try (Response response = client.newCall(request).execute()){
             if(!response.isSuccessful()) throw new IOException("Unexpected code "+response);
             ResponseBody responseBody=response.body();
             if(responseBody==null) throw new IOException("Empty response body");
@@ -73,6 +73,6 @@ public class HttpUtils {
      * @throws IOException
      */
     public static <T> T parseJson(String json,Class<T> clazz) throws IOException {
-        return ObjectMapperHolder.objectMapper.readValue(json, clazz);
+        return objectMapper.readValue(json, clazz);
     }
 }

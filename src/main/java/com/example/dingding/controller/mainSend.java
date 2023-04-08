@@ -1,35 +1,27 @@
 package com.example.dingding.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.dingding.mapper.user_sendMapper;
 import com.example.dingding.pojo.user_send;
 import com.example.dingding.server.getMsg;
 
 
 import com.example.dingding.server.serverImpl.gptApi;
 import com.example.dingding.utils.AliGetImage;
-import com.example.dingding.utils.RedisConfig;
-import org.json.JSONArray;
+import com.example.dingding.utils.Log4j;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.util.List;
-
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import com.example.dingding.server.sendMsg;
-import com.example.dingding.server.serverImpl.gptApi;
-import com.example.dingding.mapper.user_sendMapper;
+
 @RestController
 public class mainSend {
     @Autowired
@@ -40,8 +32,11 @@ public class mainSend {
     gptApi gptApi;
     @Autowired
     AliGetImage aliGetImage;
+    @Autowired
+    Log4j log;
 
     ExecutorService executorService= Executors.newFixedThreadPool(10);
+
 
     /**
      * 接受钉钉@发送的json对象，将json对象交由server层处理
@@ -52,7 +47,10 @@ public class mainSend {
     public void getMsgAndSend(@RequestBody(required = false) JSONObject json) throws IOException {
         executorService.submit(()->{
             try {
-                user_send user=getmsg.getMsg(json);
+                Logger logger=log.log4j();
+                logger.debug("对话接口用户传入信息JSON："+json.toString());
+                user_send user=new user_send();
+                user=getmsg.getMsg(json,user);
                 sendMsg.sendMsg(user);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -69,7 +67,10 @@ public class mainSend {
     public void getImageAndSend(@RequestBody(required = false) JSONObject json) throws IOException {
         executorService.submit(()->{
             try {
-                user_send user=getmsg.getImage(json);
+                Logger logger=log.log4j();
+                logger.debug("生成图片接口用户传入信息JSON："+json.toString());
+                user_send user=new user_send();
+                user=getmsg.getImage(json,user);
                 sendMsg.sendImageUrl(user);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -84,7 +85,8 @@ public class mainSend {
      */
     @RequestMapping(value="/editImage",method= RequestMethod.POST)
     public void editImageAndSend(@RequestBody(required = false) JSONObject json) throws IOException {
-
+        Logger logger=log.log4j();
+        logger.debug("生成图片接口用户传入信息JSON：");
         //aliGetImage.getAliImageUrl()
     }
 

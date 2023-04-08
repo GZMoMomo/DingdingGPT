@@ -9,7 +9,9 @@ import com.dingtalk.api.response.OapiRobotSendResponse;
 import com.example.dingding.mapper.user_sendMapper;
 import com.example.dingding.pojo.user_send;
 import com.example.dingding.server.serverImpl.gptApi_specialSet;
+import com.example.dingding.utils.Log4j;
 import com.taobao.api.ApiException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,9 @@ import com.example.dingding.mapper.user_sendMapper;
 
 @Service
 public class getMsg {
+
     @Autowired
-    user_send user;
+    Log4j log;
     @Autowired
     gptApi gptApi;
     @Autowired
@@ -40,13 +43,17 @@ public class getMsg {
      * @param json  获取钉钉@后JSON信息
      * @throws IOException
      */
-    public user_send getMsg(JSONObject json) throws IOException {
+    public user_send getMsg(JSONObject json,user_send user) throws IOException {
         //将钉钉@的信息保存至user_send对象中
         user.setuser(json);
+        Logger logger=log.log4j();
+        logger.debug("user_send设置传入json："+user.toString());
         //获取历史聊天记录
         List<user_send> userSendList=userSendListRedis(user);
+        logger.debug("获取redis记录："+userSendList.toString());
         //执行GPT API
         String answer=gptApi.gptApi(user,userSendList);
+        logger.debug("对话api responseJson："+answer);
         //将GPT API响应的回答保存至user_send对象中
         user.setans(answer);
         return user;
@@ -57,7 +64,7 @@ public class getMsg {
      * @param json  获取钉钉@后JSON信息
      * @throws IOException
      */
-    public user_send getImage(JSONObject json) throws IOException {
+    public user_send getImage(JSONObject json,user_send user) throws IOException {
         //将钉钉@的信息保存至user_send对象中
         user.setuser(json);
         //发送给chatgpt优化描述词

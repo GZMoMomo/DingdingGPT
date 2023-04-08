@@ -22,8 +22,6 @@ import com.example.dingding.mapper.user_sendMapper;
 @Service
 public class sendMsg {
     @Autowired
-    user_send user;
-    @Autowired
     gptApi gptApi;
     @Autowired
     user_sendMapper user_sendMapper;

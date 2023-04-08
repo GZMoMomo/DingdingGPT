@@ -3,7 +3,9 @@ package com.example.dingding.pojo;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.example.dingding.utils.Log4j;
 import lombok.Data;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.springframework.stereotype.Component;
 
@@ -59,8 +61,12 @@ public class user_send  implements Serializable {
      * @param json
      */
     public void setuser(JSONObject json){
+        Log4j log=new Log4j();
         content=(json.getJSONObject("text").get("content").toString().replaceAll(" ",""));
+        Logger logger=log.log4j();
+        logger.debug("senderID设置:"+json.getString("senderStaffId"));
         senderStaffId=(json.getString("senderStaffId"));
+        logger.debug("senderID设置后:"+senderStaffId);
         sessionWebhook=(json.getString("sessionWebhook"));
         msgtype=(json.getString("msgtype"));
         createAt=(json.getString("createAt"));
