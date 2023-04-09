@@ -1,5 +1,6 @@
 package com.example.dingding.utils;
 
+import com.example.dingding.pojo.user_send;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

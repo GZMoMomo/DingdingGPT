@@ -2,6 +2,7 @@ package com.example.dingding.server;
 
 
 
+import com.example.dingding.pojo.user_send;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
@@ -30,11 +31,6 @@ public class KafkaProducerSerivce {
             }
         });
     }
-
-    /*@KafkaListener(topics="user_send")
-    public void consumeMessage(String message){
-        System.out.println(message);
-    }*/
 
     @PreDestroy
     public void close(){

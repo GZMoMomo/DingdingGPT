@@ -41,13 +41,15 @@ public class mainSend {
     @RequestMapping(value="/getMsg",method= RequestMethod.POST)
     public void getMsgAndSend(@RequestBody(required = false) JSONObject json) throws IOException {
             try {
+               // String message=json.toJSONString();
+               // kafkaProducerSerivce.sendMessage(message);
+
                 user_send user=new user_send();
                 user=getmsg.getMsg(json,user);
                 sendMsg.sendMsg(user);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
     }
 
     /**
@@ -57,7 +59,6 @@ public class mainSend {
      */
     @RequestMapping(value="/getImage",method= RequestMethod.POST)
     public void getImageAndSend(@RequestBody(required = false) JSONObject json) throws IOException {
-
             try {
                 user_send user=new user_send();
                 user=getmsg.getImage(json,user);
@@ -65,7 +66,6 @@ public class mainSend {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
     }
 
     /**
@@ -85,7 +85,8 @@ public class mainSend {
      */
     @RequestMapping(value="/test",method= RequestMethod.POST)
     public void test() throws IOException {
-        kafkaProducerSerivce.sendMessage("1");
+
+        kafkaProducerSerivce.sendMessage("123");
 
     }
 }
