@@ -15,7 +15,7 @@ import javax.annotation.PreDestroy;
 @Service
 public class KafkaProducerSerivce {
 
-
+/*
     private Producer<String, String> producer;
     public KafkaProducerSerivce(Producer<String, String> producer){
         this.producer= producer;
@@ -35,5 +35,5 @@ public class KafkaProducerSerivce {
     @PreDestroy
     public void close(){
         producer.close();
-    }
+    }*/
 }

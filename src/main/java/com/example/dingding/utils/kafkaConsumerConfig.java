@@ -19,7 +19,7 @@ import java.util.Map;
 @EnableConfigurationProperties(kafkaProperties.class)
 @EnableKafka
 public class kafkaConsumerConfig {
-    private final kafkaProperties kafkaProperties;
+    /*private final kafkaProperties kafkaProperties;
 
     public kafkaConsumerConfig(com.example.dingding.utils.kafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
@@ -41,5 +41,5 @@ public class kafkaConsumerConfig {
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
-    }
+    }*/
 }

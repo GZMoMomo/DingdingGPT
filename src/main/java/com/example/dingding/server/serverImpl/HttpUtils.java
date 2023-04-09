@@ -33,7 +33,7 @@ public class HttpUtils {
     //GPTAPI Image
     public static final String urlImage = "https://mokjyz.xyz/v1/images/generations";
     // GPT API TOKEN
-    public static final String token = "sk-*" ;
+    public static final String token = "sk-**" ;
 
     /**
      * 发送post请求给GPT API，接受返回的信息
@@ -66,7 +66,7 @@ public class HttpUtils {
            //return jsonObject1.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
             return responseBody.string();
         }
-        
+
     }
 
     /**

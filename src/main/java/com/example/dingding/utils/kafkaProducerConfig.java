@@ -12,7 +12,7 @@ import java.util.Properties;
 @Configuration
 @EnableConfigurationProperties(kafkaProperties.class)
 public class kafkaProducerConfig {
-    private final kafkaProperties kafkaProperties;
+    /*private final kafkaProperties kafkaProperties;
 
     public kafkaProducerConfig(kafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
@@ -27,5 +27,5 @@ public class kafkaProducerConfig {
         props.put("key.serializer",kafkaProperties.getKeySerializer());
         props.put("value.serializer",kafkaProperties.getValueSerializer());
         return new KafkaProducer<>(props);
-    }
+    }*/
 }

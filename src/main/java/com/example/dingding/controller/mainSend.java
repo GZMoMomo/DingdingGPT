@@ -86,7 +86,7 @@ public class mainSend {
     @RequestMapping(value="/test",method= RequestMethod.POST)
     public void test() throws IOException {
 
-        kafkaProducerSerivce.sendMessage("123");
+       // kafkaProducerSerivce.sendMessage("123");
 
     }
 }

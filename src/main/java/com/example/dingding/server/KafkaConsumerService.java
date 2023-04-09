@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumerService {
 
-    @KafkaListener(topics = "user_send")
+  /*  @KafkaListener(topics = "user_send")
     public void consumeMessage(ConsumerRecord<String,String> record, Acknowledgment ack){
         try {
             String message=record.value();
@@ -21,5 +21,5 @@ public class KafkaConsumerService {
         }finally {
             ack.acknowledge();
         }
-    }
+    }*/
 }
