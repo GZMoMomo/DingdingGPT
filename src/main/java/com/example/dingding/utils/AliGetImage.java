@@ -2,6 +2,7 @@ package com.example.dingding.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.tea.TeaException;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

@@ -28,7 +28,6 @@ public class gptApi {
      */
     public String gptApi(user_send user, List<user_send> userSendList) throws IOException {
         String content = cleanContent(user.getContent());
-
         //添加JSON
         JSONObject requestBody = new JSONObject();
         JSONArray messagesArray = new JSONArray();
@@ -54,7 +53,7 @@ public class gptApi {
         requestBody.put("temperature", 1);
         requestBody.put("model", "gpt-3.5-turbo");
         //执行
-        return http.post(http.url,requestBody,http.token);
+        return http.post(http.url,requestBody,http.token,user);
     }
 
     /**
@@ -75,7 +74,7 @@ public class gptApi {
         requestBody.put("n", 2);
         requestBody.put("size", "1024x1024");
         //执行
-        return http.post(http.urlImage,requestBody,http.token);
+        return http.post(http.urlImage,requestBody,http.token,user);
     }
 
 

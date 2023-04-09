@@ -53,6 +53,6 @@ public class gptApi_specialSet {
         requestBody.put("temperature", 1);
         requestBody.put("model", "gpt-3.5-turbo");
         //执行
-        return http.post(http.url,requestBody,http.token);
+        return http.post(http.url,requestBody,http.token,user);
     }
 }

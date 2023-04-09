@@ -1,9 +1,8 @@
 package com.example.dingding.server.serverImpl;
 
-
-
-import com.example.dingding.utils.Log4j;
+import com.example.dingding.pojo.user_send;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.dingding.server.sendMsg;
 import okhttp3.*;
 
 import org.apache.log4j.Logger;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class HttpUtils {
 
     //HTTP客户端库，可用于向Web服务器发起HTTP请求并处理响应，单例复用实例。
-    private static final OkHttpClient client=new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).protocols(Arrays.asList(Protocol.HTTP_1_1)).build();
+    private static final OkHttpClient client=new OkHttpClient.Builder().readTimeout(10, TimeUnit.MINUTES).build();
 
     //Jackson库中的一个核心类，它提供了序列化和反序列化JSON的功能,单例复用。
     private static final ObjectMapper objectMapper=new ObjectMapper();
@@ -43,10 +43,7 @@ public class HttpUtils {
      * @return  GPT API返回的json
      * @throws IOException
      */
-    public static String post(String url, JSONObject jsonObject , String apiKey) throws IOException {
-        Log4j log=new Log4j();
-        Logger logger=log.log4j();
-        logger.debug("对话api requestBody："+jsonObject.toString());
+    public static String post(String url, JSONObject jsonObject , String apiKey, user_send user) throws IOException {
         RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
         Request request = new Request.Builder()
                 .url(url)
@@ -55,10 +52,17 @@ public class HttpUtils {
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()){
-            if(!response.isSuccessful()) throw new IOException("Unexpected code "+response);
+            if(!response.isSuccessful()){
+                sendMsg sendMsg=new sendMsg();
+                sendMsg.freeText(user,"ops!由于网络拥堵，来自大洋彼岸的回复丢失了！请稍后再试，若长时间失败，我的管理员正在奋力修复中，请耐心等待~");
+                throw new IOException("Unexpected code: "+response);
+            }
             ResponseBody responseBody=response.body();
-            if(responseBody==null) throw new IOException("Empty response body");
-
+            if(responseBody==null){
+                sendMsg sendMsg=new sendMsg();
+                sendMsg.freeText(user,"ops!由于未知原因，来自大洋彼岸的回复是空信息。请稍后再试，若长时间失败，我的管理员正在奋力修复中，请耐心等待~");
+                throw new IOException("Empty response body");
+            }
            //return jsonObject1.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
             return responseBody.string();
         }

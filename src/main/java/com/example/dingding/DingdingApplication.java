@@ -11,7 +11,6 @@ public class DingdingApplication {
     public static void main(String[] args) {
         SpringApplication.run(DingdingApplication.class, args);
 
-
     }
 
 }
