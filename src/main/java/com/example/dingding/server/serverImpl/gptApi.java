@@ -27,11 +27,16 @@ public class gptApi {
      * @throws IOException
      */
     public String gptApi(user_send user, List<user_send> userSendList) throws IOException {
+        String setApi="请使用MarkDown格式返回信息。";
         String content = cleanContent(user.getContent());
         //添加JSON
         JSONObject requestBody = new JSONObject();
         JSONArray messagesArray = new JSONArray();
         JSONObject message = new JSONObject();
+        JSONObject system = new JSONObject();
+        //添加GPT system预设
+        system.put("role","system");
+        system.put("content",setApi);
         //message 添加用户问题
             //循环添加历史聊天记录
         for(user_send user_send:userSendList){
@@ -47,6 +52,7 @@ public class gptApi {
         message.put("role","user");
         message.put("content",content);
         //messageArray
+        messagesArray.put(system);
         messagesArray.put(message);
         //JsonObject 设置GPT参数
         requestBody.put("messages", messagesArray);

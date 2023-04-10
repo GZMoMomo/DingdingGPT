@@ -19,8 +19,18 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class HttpUtils {
 
+    // 私有构造函数
+    private HttpUtils() {}
+
     //HTTP客户端库，可用于向Web服务器发起HTTP请求并处理响应，单例复用实例。
-    private static final OkHttpClient client=new OkHttpClient.Builder().readTimeout(10, TimeUnit.MINUTES).build();
+    private static class SingletonHolder {
+        private static final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(3,TimeUnit.MINUTES).readTimeout(10, TimeUnit.MINUTES).writeTimeout(10, TimeUnit.MINUTES).pingInterval(60,TimeUnit.MINUTES).build();
+    }
+
+    // 获取单例实例
+    public static OkHttpClient getClient() {
+        return SingletonHolder.client;
+    }
 
     //Jackson库中的一个核心类，它提供了序列化和反序列化JSON的功能,单例复用。
     private static final ObjectMapper objectMapper=new ObjectMapper();
@@ -51,7 +61,7 @@ public class HttpUtils {
                 .addHeader("Authorization", "Bearer "+apiKey)
                 .post(body)
                 .build();
-        try (Response response = client.newCall(request).execute()){
+        try (Response response = getClient().newCall(request).execute()){
             if(!response.isSuccessful()){
                 sendMsg sendMsg=new sendMsg();
                 sendMsg.freeText(user,"ops!由于网络拥堵，来自大洋彼岸的回复丢失了！请稍后再试，若长时间失败，我的管理员正在奋力修复中，请耐心等待~");

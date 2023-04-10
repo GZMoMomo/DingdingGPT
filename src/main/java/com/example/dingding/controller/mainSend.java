@@ -2,6 +2,7 @@ package com.example.dingding.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.dingding.pojo.user_send;
+import com.example.dingding.server.KafkaConsumerService;
 import com.example.dingding.server.KafkaProducerSerivce;
 import com.example.dingding.server.getMsg;
 
@@ -30,7 +31,8 @@ public class mainSend {
     AliGetImage aliGetImage;
     @Autowired
     KafkaProducerSerivce kafkaProducerSerivce;
-
+    @Autowired
+    KafkaConsumerService kafkaConsumerService;
 
 
     /**
@@ -40,16 +42,13 @@ public class mainSend {
      */
     @RequestMapping(value="/getMsg",method= RequestMethod.POST)
     public void getMsgAndSend(@RequestBody(required = false) JSONObject json) throws IOException {
-            try {
-               // String message=json.toJSONString();
-               // kafkaProducerSerivce.sendMessage(message);
 
-                user_send user=new user_send();
+                String message=json.toJSONString();
+                kafkaProducerSerivce.sendMessage(message);
+                /*user_send user=new user_send();
                 user=getmsg.getMsg(json,user);
-                sendMsg.sendMsg(user);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                sendMsg.sendMsg(user);*/
+
     }
 
     /**
@@ -86,7 +85,7 @@ public class mainSend {
     @RequestMapping(value="/test",method= RequestMethod.POST)
     public void test() throws IOException {
 
-       // kafkaProducerSerivce.sendMessage("123");
-
+        kafkaProducerSerivce.sendMessage("{\"conversationId\":\"cidnx0wRB2/ApSkGhq1ewIygA==\",\"atUsers\":[{\"dingtalkId\":\"$:LWCP_v1:$uVgOt3kYDpPQyRGKDsZbCX+OQ8FGM/CT\"}],\"chatbotCorpId\":\"ding16559ddfdd3586b34ac5d6980864d335\",\"chatbotUserId\":\"$:LWCP_v1:$uVgOt3kYDpPQyRGKDsZbCX+OQ8FGM/CT\",\"msgId\":\"msg/YKrzd47wPi5xICTKO6+zg==\",\"senderNick\":\"莫铭浩\",\"isAdmin\":true,\"senderStaffId\":\"manager8022\",\"sessionWebhookExpiredTime\":1681117876415,\"createAt\":1681112474682,\"senderCorpId\":\"ding16559ddfdd3586b34ac5d6980864d335\",\"conversationType\":\"2\",\"senderId\":\"$:LWCP_v1:$Q/cQd9GZI7MN8N/DkFUJx/kF4Z0kI7ZQ\",\"conversationTitle\":\"儒韵GPT测试群\",\"isInAtList\":true,\"sessionWebhook\":\"https://oapi.dingtalk.com/robot/sendBySession?session=99807ae5868e89b27dd6994e702fde8a\",\"text\":{\"content\":\" 消费信息测试\"},\"robotCode\":\"dingeo8pq8qojlm6mkew\",\"msgtype\":\"text\"}\n");
+        kafkaProducerSerivce.getQueueTimeAvg();
     }
 }

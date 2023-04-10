@@ -31,4 +31,6 @@ public class kafkaProperties {
     private String enableAutoCommit;
     @Value("${kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;
+    @Value("${kafka.consumer.max-poll-records}")
+    private int maxPollRecords;
 }

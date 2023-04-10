@@ -63,24 +63,27 @@ public class sendMsg {
         try {
             //创建钉钉客户端
             DingTalkClient client=new DefaultDingTalkClient(user.getSessionWebhook());
-            //获取用户ID
-            String senderstaffid=user.getSenderStaffId();
             //创建发送至钉钉的request
-            OapiRobotSendRequest request=new OapiRobotSendRequest();
-            //发送至钉钉的消息类型
-            request.setMsgtype("text");
-            //发送至钉钉的信息内容
-            OapiRobotSendRequest.Text text=new OapiRobotSendRequest.Text();
-            text.setContent("@"+senderstaffid+"\n"+user.getAnswer());
-            request.setText(text);
-            //设置钉钉的@功能 @信息发送者
-            OapiRobotSendRequest.At at=new OapiRobotSendRequest.At();
-            at.setAtUserIds(Arrays.asList(senderstaffid));
-            //是否@所有人 否
+            OapiRobotSendRequest request = new OapiRobotSendRequest();
+            //发送至钉钉的消息类型为markdown
+            request.setMsgtype("markdown");
+            OapiRobotSendRequest.Markdown markdown = new OapiRobotSendRequest.Markdown();
+            //设置Markdown标题（暂不生效）
+            markdown.setTitle("答案生成完毕！");
+            //获取Image API返回的图片url
+            String answer=user.getAnswer();
+            //发送信息内容并@用户
+            markdown.setText(" @" + user.getSenderStaffId() + "  \n  " + answer);
+            //设置request
+            request.setMarkdown(markdown);
+            //@用户设置
+            OapiRobotSendRequest.At at = new OapiRobotSendRequest.At();
+            at.setAtUserIds(Arrays.asList(user.getSenderStaffId()));
+            //isAtAll类型如果不为Boolean，请升级至最新SDK
             at.setIsAtAll(false);
             request.setAt(at);
-            //执行request
-            OapiRobotSendResponse response=client.execute(request);
+            //执行
+            OapiRobotSendResponse response = client.execute(request);
         }catch (ApiException e){
             e.printStackTrace();
         }
@@ -155,6 +158,38 @@ public class sendMsg {
             request.setAt(at);
             //执行request
             OapiRobotSendResponse response=client.execute(request);
+        }catch (ApiException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * markdown发送信息
+     * @param user user_send对象，存储了用户的问题、答案等等信息
+     */
+    private void markDownText(user_send user){
+        try {
+            //创建钉钉客户端
+            DingTalkClient client=new DefaultDingTalkClient(user.getSessionWebhook());
+            //创建发送至钉钉的request
+            OapiRobotSendRequest request = new OapiRobotSendRequest();
+            //发送至钉钉的消息类型为markdown
+            request.setMsgtype("markdown");
+            OapiRobotSendRequest.Markdown markdown = new OapiRobotSendRequest.Markdown();
+            //获取Image API返回的图片url
+            String answer=user.getAnswer();
+            //发送信息内容并@用户
+            markdown.setText(" @" + user.getSenderStaffId() + "  \n  " + answer);
+            //设置request
+            request.setMarkdown(markdown);
+            //@用户设置
+            OapiRobotSendRequest.At at = new OapiRobotSendRequest.At();
+            at.setAtUserIds(Arrays.asList(user.getSenderStaffId()));
+            //isAtAll类型如果不为Boolean，请升级至最新SDK
+            at.setIsAtAll(false);
+            request.setAt(at);
+            //执行
+            OapiRobotSendResponse response = client.execute(request);
         }catch (ApiException e){
             e.printStackTrace();
         }

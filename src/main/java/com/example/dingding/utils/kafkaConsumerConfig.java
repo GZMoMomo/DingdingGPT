@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
@@ -19,11 +20,12 @@ import java.util.Map;
 @EnableConfigurationProperties(kafkaProperties.class)
 @EnableKafka
 public class kafkaConsumerConfig {
-    /*private final kafkaProperties kafkaProperties;
+    private final kafkaProperties kafkaProperties;
 
     public kafkaConsumerConfig(com.example.dingding.utils.kafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
     }
+
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory(){
@@ -32,6 +34,7 @@ public class kafkaConsumerConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG,kafkaProperties.getGroupId());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,kafkaProperties.getAutoOffsetReset());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,kafkaProperties.getEnableAutoCommit());
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,kafkaProperties.getMaxPollRecords());
         return new DefaultKafkaConsumerFactory<>(props,new StringDeserializer(),new StringDeserializer());
     }
 
@@ -41,5 +44,5 @@ public class kafkaConsumerConfig {
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
-    }*/
+    }
 }
