@@ -11,6 +11,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import java.io.IOException;
+import com.example.dingding.utils.parseJson;
 
 @Service
 public class KafkaConsumerService {
@@ -18,24 +19,20 @@ public class KafkaConsumerService {
     sendMsg sendMsg;
     @Autowired
     getMsg getmsg;
+    @Autowired
+    parseJson parseJson;
 
    @KafkaListener(topics = "user_send")
     public void consumeMessage(ConsumerRecord<String,String> record, Acknowledgment ack) throws IOException {
         try {
             String message=record.value();
-            System.out.println(message);
-            JSONObject json= JSON.parseObject(message);
-            user_send user=new user_send();
-            user=getmsg.getMsg(json,user);
+            //将钉钉@的信息保存至user_send对象中
+            user_send user=parseJson.parseJson(message,user_send.class);
+            user=getmsg.getMsg(user);
             sendMsg.sendMsg(user);
         }catch (Exception e){
             e.printStackTrace();
-            String message=record.value();
-            JSONObject json= JSON.parseObject(message);
-            user_send user=new user_send();
-            user=getmsg.getMsg(json,user);
-            sendMsg.freeText(user,"Ops!!系统出现严重错误！请管理员尽快维护!");
-        }finally {
+        } finally {
             ack.acknowledge();
         }
     }

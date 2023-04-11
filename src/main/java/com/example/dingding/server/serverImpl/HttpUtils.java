@@ -32,8 +32,6 @@ public class HttpUtils {
         return SingletonHolder.client;
     }
 
-    //Jackson库中的一个核心类，它提供了序列化和反序列化JSON的功能,单例复用。
-    private static final ObjectMapper objectMapper=new ObjectMapper();
 
     //静态媒体类型，用来描述请求和响应消息的格式和字符集。
     private static final MediaType JSON = MediaType.get("application/json;chartset=utf-8");
@@ -43,7 +41,7 @@ public class HttpUtils {
     //GPTAPI Image
     public static final String urlImage = "https://mokjyz.xyz/v1/images/generations";
     // GPT API TOKEN
-    public static final String token = "sk-**" ;
+    public static final String token = "sk-*" ;
 
     /**
      * 发送post请求给GPT API，接受返回的信息
@@ -53,7 +51,7 @@ public class HttpUtils {
      * @return  GPT API返回的json
      * @throws IOException
      */
-    public static String post(String url, JSONObject jsonObject , String apiKey, user_send user) throws IOException {
+    public static String post(String url, JSONObject jsonObject , String apiKey, user_send user) {
         RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
         Request request = new Request.Builder()
                 .url(url)
@@ -75,19 +73,11 @@ public class HttpUtils {
             }
            //return jsonObject1.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
             return responseBody.string();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
+            return null;
     }
 
-    /**
-     * 用于将JSON字符串解析成指定类型的Java对象。其中，参数json是待解析的JSON字符串，clazz是指定的目标Java类。
-     * @param json
-     * @param clazz
-     * @param <T>
-     * @return  指定类型的Java对象
-     * @throws IOException
-     */
-    public static <T> T parseJson(String json,Class<T> clazz) throws IOException {
-        return objectMapper.readValue(json, clazz);
-    }
+
 }

@@ -31,12 +31,9 @@ public class getMsg {
 
     /**
      *  获取钉钉@的JSON信息，然后发送至GPT API 获取答案，最终输出答案到钉钉
-     * @param json  获取钉钉@后JSON信息
      * @throws IOException
      */
-    public user_send getMsg(JSONObject json,user_send user) throws IOException {
-        //将钉钉@的信息保存至user_send对象中
-        user.setuser(json);
+    public user_send getMsg(user_send user)  {
         sendMsg.freeText(user,"已经收到您的问题啦，请稍等片刻，正在努力思考中~");
         //获取历史聊天记录
         List<user_send> userSendList=userSendListRedis(user);

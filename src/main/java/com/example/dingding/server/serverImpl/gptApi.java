@@ -26,7 +26,7 @@ public class gptApi {
      * @return  API返回的json字符串
      * @throws IOException
      */
-    public String gptApi(user_send user, List<user_send> userSendList) throws IOException {
+    public String gptApi(user_send user, List<user_send> userSendList) {
         String setApi="请使用MarkDown格式返回信息。";
         String content = cleanContent(user.getContent());
         //添加JSON

@@ -33,4 +33,6 @@ public class kafkaProperties {
     private String autoOffsetReset;
     @Value("${kafka.consumer.max-poll-records}")
     private int maxPollRecords;
+    @Value("${kafka.max.block.ms}")
+    private long maxBlockMs;
 }

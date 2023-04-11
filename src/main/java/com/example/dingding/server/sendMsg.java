@@ -33,7 +33,7 @@ public class sendMsg {
      *  获取已经存储信息的user_send对象输出答案到钉钉，并将信息缓存到redis中
      * @throws IOException
      */
-    public void sendMsg(user_send user) throws IOException {
+    public void sendMsg(user_send user)  {
         //将GPT API的回答发送至钉钉
         text(user);
         //将事务存储在mysql

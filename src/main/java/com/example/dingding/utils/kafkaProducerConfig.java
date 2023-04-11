@@ -28,6 +28,7 @@ public class kafkaProducerConfig {
         props.put("acks",kafkaProperties.getAcks());
         props.put("key.serializer",kafkaProperties.getKeySerializer());
         props.put("value.serializer",kafkaProperties.getValueSerializer());
+        props.put("max.block.ms", kafkaProperties.getMaxBlockMs());
         return new KafkaProducer<>(props);
     }
 }
