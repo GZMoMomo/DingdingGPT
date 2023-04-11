@@ -29,6 +29,7 @@ public class kafkaProducerConfig {
         props.put("key.serializer",kafkaProperties.getKeySerializer());
         props.put("value.serializer",kafkaProperties.getValueSerializer());
         props.put("max.block.ms", kafkaProperties.getMaxBlockMs());
+        props.put("session.timeout.ms",kafkaProperties.getSessionTimeoutMs());
         return new KafkaProducer<>(props);
     }
 }

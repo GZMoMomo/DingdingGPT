@@ -26,7 +26,10 @@ public class kafkaConsumerConfig {
         this.kafkaProperties = kafkaProperties;
     }
 
-
+    /**
+     * 创建Kafka消费者实例，其中通过kafkaProperties中的配置获取所需的Kafka服务器地址，消费组ID，自动提交偏移量等参数
+     * @return ConsumerFactory
+     */
     @Bean
     public ConsumerFactory<String, String> consumerFactory(){
         Map<String,Object> props=new HashMap<>();
@@ -35,9 +38,16 @@ public class kafkaConsumerConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,kafkaProperties.getAutoOffsetReset());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,kafkaProperties.getEnableAutoCommit());
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,kafkaProperties.getMaxPollRecords());
+        props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG,kafkaProperties.getMaxPollIntervalMs());
+        props.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG,kafkaProperties.getHeartbeatInterval());
         return new DefaultKafkaConsumerFactory<>(props,new StringDeserializer(),new StringDeserializer());
     }
 
+
+    /**
+     *  Kafka侦听器容器工厂，可以创建Kafka消息监听器容器实例，通过设置消费者工厂、手动确认模式等属性来自定义容器的行为
+     * @return ConcurrentKafkaListenerContainerFactory
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(){
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();

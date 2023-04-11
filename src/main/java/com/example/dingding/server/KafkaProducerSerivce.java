@@ -21,17 +21,18 @@ import java.util.Map;
 
 @Service
 public class KafkaProducerSerivce {
-
     @Autowired
     sendMsg sendMsg;
 
     private Producer<String, String> producer;
-    private kafkaProperties kafkaproperties;
-    public KafkaProducerSerivce(Producer<String, String> producer,kafkaProperties kafkaProperties){
+    public KafkaProducerSerivce(Producer<String, String> producer){
         this.producer= producer;
-        this.kafkaproperties=kafkaProperties;
     }
 
+    /**
+     * kafka生产者发送信息
+     * @param json 钉钉接受的jsonObject
+     */
     public void sendMessage(JSONObject json){
         user_send user=new user_send();
         user.setuser(json);
@@ -53,6 +54,10 @@ public class KafkaProducerSerivce {
         }
     }
 
+    /**
+     * 获取Kafka生产者中的消费消息的平均速度指标 /秒
+     * @return
+     */
     public double getQueueTimeAvg(){
         Map<MetricName, ? extends Metric> metrics = producer.metrics();
         double avgQueueTime = 0;
@@ -67,14 +72,15 @@ public class KafkaProducerSerivce {
         }
         if (count > 0) {
             avgQueueTime /= count;
-            System.out.println("Average record queue time:" + avgQueueTime);
             return avgQueueTime;
         } else {
-            System.out.println("No record queue time metric found");
             return 0.00;
         }
     }
 
+    /**
+     * 发送消息后关闭生产者
+     */
     @PreDestroy
     public void close(){
         producer.close();

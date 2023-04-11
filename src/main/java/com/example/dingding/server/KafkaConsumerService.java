@@ -22,6 +22,12 @@ public class KafkaConsumerService {
     @Autowired
     parseJson parseJson;
 
+    /**
+     * 监听生产者发送的信息，消费信息
+     * @param record 回调函数
+     * @param ack 手动确认消费信息
+     * @throws IOException
+     */
    @KafkaListener(topics = "user_send")
     public void consumeMessage(ConsumerRecord<String,String> record, Acknowledgment ack) throws IOException {
         try {
