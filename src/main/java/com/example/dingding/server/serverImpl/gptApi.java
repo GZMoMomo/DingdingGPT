@@ -17,6 +17,8 @@ public class gptApi {
 
     @Autowired
     HttpUtils http;
+    @Autowired
+    HttpSseUtils httpSseUtils;
 
 
     /**
@@ -58,8 +60,10 @@ public class gptApi {
         requestBody.put("messages", messagesArray);
         requestBody.put("temperature", 1);
         requestBody.put("model", "gpt-3.5-turbo");
+        //流处理requestBody.put("stream", true);
         //执行
         return http.post(http.url,requestBody,http.token,user);
+        //流处理httpSseUtils.postStream(http.url,requestBody,http.token,user);
     }
 
     /**

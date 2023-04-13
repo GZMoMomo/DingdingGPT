@@ -45,7 +45,8 @@ public class mainSend {
      */
     @RequestMapping(value="/getMsg",method= RequestMethod.POST)
     public void getMsgAndSend(@RequestBody(required = false) JSONObject json) throws IOException {
-                kafkaProducerSerivce.sendMessage(json);
+        //放入消息队列
+        kafkaProducerSerivce.sendMessage(json);
     }
 
     /**
@@ -80,6 +81,6 @@ public class mainSend {
      */
     @RequestMapping(value="/test",method= RequestMethod.POST)
     public void test() throws IOException {
-
+            kafkaProducerSerivce.sendtest("你好呀");
     }
 }

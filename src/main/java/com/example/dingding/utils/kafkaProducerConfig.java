@@ -1,6 +1,6 @@
 package com.example.dingding.utils;
 
-import com.example.dingding.pojo.user_send;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,6 +20,10 @@ public class kafkaProducerConfig {
         this.kafkaProperties = kafkaProperties;
     }
 
+    /**
+     * //kafka注册配置信息实例化Producer
+     * @return Producer
+     */
     @Bean
     public Producer<String, String> kafkaProducer() {
         Properties props = new Properties();

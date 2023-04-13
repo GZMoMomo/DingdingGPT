@@ -24,7 +24,7 @@ public class HttpUtils {
 
     //HTTP客户端库，可用于向Web服务器发起HTTP请求并处理响应，单例复用实例。
     private static class SingletonHolder {
-        private static final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(3,TimeUnit.MINUTES).readTimeout(10, TimeUnit.MINUTES).writeTimeout(10, TimeUnit.MINUTES).pingInterval(60,TimeUnit.MINUTES).build();
+        private static final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(3,TimeUnit.MINUTES).readTimeout(10, TimeUnit.MINUTES).writeTimeout(10, TimeUnit.MINUTES).pingInterval(60,TimeUnit.SECONDS).build();
     }
 
     // 获取单例实例
@@ -41,7 +41,7 @@ public class HttpUtils {
     //GPTAPI Image
     public static final String urlImage = "https://mokjyz.xyz/v1/images/generations";
     // GPT API TOKEN
-    public static final String token = "sk-*" ;
+    public static final String token = "sk-**" ;
 
     /**
      * 发送post请求给GPT API，接受返回的信息
@@ -78,6 +78,8 @@ public class HttpUtils {
         }
             return null;
     }
+
+
 
 
 }

@@ -51,6 +51,9 @@ public class sendMsg {
         //将GPT API的回答发送至钉钉
         image(user);
         user.setGptApiType("createImage");
+        user.setPrompt_tokens(null);
+        user.setCompletion_tokens(null);
+        user.setTotal_tokens(null);
         //将事务存储在mysql
         user_sendMapper.insert(user);
     }

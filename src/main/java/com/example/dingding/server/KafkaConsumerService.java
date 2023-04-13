@@ -1,16 +1,25 @@
 package com.example.dingding.server;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+
 import com.example.dingding.pojo.user_send;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.ListConsumerGroupOffsetsResult;
+import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.errors.TimeoutException;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
-import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
 import com.example.dingding.utils.parseJson;
 
 @Service
@@ -21,6 +30,11 @@ public class KafkaConsumerService {
     getMsg getmsg;
     @Autowired
     parseJson parseJson;
+    @Autowired
+    AdminClient client;
+    @Autowired
+    KafkaConsumer consumer;
+
 
     /**
      * 监听生产者发送的信息，消费信息
@@ -28,7 +42,7 @@ public class KafkaConsumerService {
      * @param ack 手动确认消费信息
      * @throws IOException
      */
-   @KafkaListener(topics = "user_send")
+   @KafkaListener(topics = "user_send2",containerFactory = "kafkaListenerContainerFactory")
     public void consumeMessage(ConsumerRecord<String,String> record, Acknowledgment ack) throws IOException {
         try {
             String message=record.value();
@@ -42,5 +56,65 @@ public class KafkaConsumerService {
             ack.acknowledge();
         }
     }
+
+    /**
+     * 最新消息的偏移量减去已消费的偏移量，并将所有分区的消费延迟求和,返回所有分区的平均消费延迟。
+     * @return lag / count
+     * @throws TimeoutException
+     */
+    public  long lagOf() throws TimeoutException {
+        try {
+            ListConsumerGroupOffsetsResult result = client.listConsumerGroupOffsets("consumer_user");
+            try {
+                //Kafka服务器获取指定消费者组中所有分区的当前消费位移信息,超过10秒抛异常
+                Map<TopicPartition, OffsetAndMetadata> consumedOffsets = result.partitionsToOffsetAndMetadata().get(10, TimeUnit.SECONDS);
+                try {
+                    Map<TopicPartition, Long> endOffsets;
+                    synchronized (consumer) {
+                        //获取所有 TopicPartition 最新的 offset
+                        endOffsets = consumer.endOffsets(consumedOffsets.keySet());
+                    }
+                    /*long lag = endOffsets.entrySet().stream()
+                            .filter(entry -> entry.getKey().topic().equals("user_send"))
+                            .mapToLong(entry -> entry.getValue() - consumedOffsets.get(entry.getKey()).offset())
+                            .sum();*/
+                    long lag = 0;
+                    long count = 0;
+                    //遍历所有分区
+                    for (Map.Entry<TopicPartition, Long> entry : endOffsets.entrySet()) {
+                        //若分区主题等于 user_send2
+                        if (entry.getKey().topic().equals("user_send2")) {
+                            //最新的offset - 当前的offset = 前方还有几条消息要消费
+                            long partitionLag = entry.getValue() - consumedOffsets.get(entry.getKey()).offset();
+                            lag += partitionLag;
+                            count++;
+                        }
+                    }
+                    //平均所有分区算的前方还有几条消息要消费
+                    return  lag / count;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return -1;
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                // 处理中断异常
+                // ...
+                return -1;
+            } catch (ExecutionException e) {
+                // 处理 ExecutionException
+                // ...
+                return -1;
+            } catch (TimeoutException e) {
+                throw new TimeoutException("Timed out when getting lag for consumer group " + "consumer_user");
+            } catch (java.util.concurrent.TimeoutException e) {
+                e.printStackTrace();
+                return -1;
+            }
+        } finally {
+
+        }
+    }
+
 
 }
