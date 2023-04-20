@@ -47,6 +47,20 @@ public class sendMsg {
      *  获取已经存储信息的user_send对象输出答案到钉钉，并将信息缓存到redis中
      * @throws IOException
      */
+    public void sendMsgKnowledge(user_send user)  {
+        //将GPT API的回答发送至钉钉
+        text(user);
+        //将事务存储在mysql
+        user.setGptApiType("knowledge");
+        user_sendMapper.insert(user);
+        //将聊天记录存储在redis，十分钟后删除
+        redisTemplate.opsForValue().set(user.getSenderStaffId()+"_"+user.getCreateAt(),user,600, TimeUnit.SECONDS);
+    }
+
+    /**
+     *  获取已经存储信息的user_send对象输出答案到钉钉，并将信息缓存到redis中
+     * @throws IOException
+     */
     public void sendImageUrl(user_send user) throws IOException {
         //将GPT API的回答发送至钉钉
         image(user);

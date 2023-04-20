@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 @Data
 @Component
@@ -80,6 +81,22 @@ public class user_send  implements Serializable {
         ansCreated=String.valueOf(jsonObject1.getInt("created"));
         prompt_tokens=jsonObject1.getJSONObject("usage").getInt("prompt_tokens");
         completion_tokens=jsonObject1.getJSONObject("usage").getInt("completion_tokens");
+        total_tokens=jsonObject1.getJSONObject("usage").getInt("total_tokens");
+    }
+
+    /**
+     * 根据GPT API返回的信息，将收到的信息存储在user_send中
+     * @param json
+     */
+    public void setansKnowledgeEmbedding(String json){
+        org.json.JSONObject jsonObject1=new org.json.JSONObject(json);
+        JSONArray embeddingArray=  jsonObject1.getJSONArray("data").getJSONObject(0).getJSONArray("embedding");
+        Float[] embedding= new Float[embeddingArray.length()];
+        for(int i=0;i<embeddingArray.length();i++){
+            embedding[i]=embeddingArray.getBigDecimal(i).floatValue();
+        }
+        answer= Arrays.toString(embedding);
+        prompt_tokens=jsonObject1.getJSONObject("usage").getInt("prompt_tokens");
         total_tokens=jsonObject1.getJSONObject("usage").getInt("total_tokens");
     }
 

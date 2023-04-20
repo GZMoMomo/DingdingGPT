@@ -3,6 +3,7 @@ package com.example.dingding.server;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dingding.mapper.user_sendMapper;
+import com.example.dingding.pojo.openai_embeddings_product_data;
 import com.example.dingding.pojo.user_send;
 import com.example.dingding.server.serverImpl.gptApi_specialSet;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 import com.example.dingding.server.serverImpl.gptApi;
+import com.example.dingding.server.serverImpl.gptApiKnowledgeEmbedding;
 
 @Service
 public class getMsg {
@@ -23,6 +25,8 @@ public class getMsg {
     gptApi gptApi;
     @Autowired
     gptApi_specialSet gptApi_specialSet;
+    @Autowired
+    gptApiKnowledgeEmbedding gptApiKnowledgeEmbedding;
     @Autowired
     user_sendMapper user_sendMapper;
     @Autowired
@@ -41,6 +45,37 @@ public class getMsg {
         String answer=gptApi.gptApi(user,userSendList);
         //将GPT API响应的回答保存至user_send对象中
         user.setans(answer);
+        return user;
+    }
+
+    /**
+     *  获取钉钉@的JSON信息，然后发送至GPT API 获取答案，最终输出答案到钉钉
+     * @throws IOException
+     */
+    public user_send getMsgKnowledge(user_send user,List<openai_embeddings_product_data> openaiEmbeddingsProductDatas)  {
+        //获取历史聊天记录
+        List<user_send> userSendList=userSendListRedis(user);
+        //执行GPT API
+        String answer=gptApiKnowledgeEmbedding.gptApiKnowledge(user,openaiEmbeddingsProductDatas,userSendList);
+        //将GPT API响应的回答保存至user_send对象中
+        user.setans(answer);
+        return user;
+    }
+
+
+    /**
+     * 接入向量数据库milvus,将用户的问题向量化
+     *  获取钉钉@的JSON信息，然后发送至GPT API 获取答案，最终输出答案到钉钉
+     * @throws IOException
+     */
+    public user_send getMsgKnowledgeEmbedding(user_send user)  {
+        sendMsg.freeText(user,"已经收到您的问题啦，请稍等片刻，正在查询知识库中~");
+        //执行GPT embedding api
+        String answer=gptApiKnowledgeEmbedding.gptApiKnowledgeEmbedding(user);
+        //将GPT embedding API响应的回答保存至user_send对象中
+        user.setansKnowledgeEmbedding(answer);
+        user.setGptApiType("embedding");
+        user_sendMapper.insert(user);
         return user;
     }
 

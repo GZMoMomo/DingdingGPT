@@ -33,8 +33,10 @@ public class kafkaProperties {
     @Value("${kafka.producer.value-serializer}")
     private String valueSerializer;
     //消费者所属的消费组ID
-    @Value("${kafka.consumer.group-id}")
-    private String groupId;
+    @Value("${kafka.consumer.group-id.user}")
+    private String groupIdUser;
+    @Value("${kafka.consumer.group-id.knowledge}")
+    private String groupIdKnowledge;
     //消费者是否启用自动提交
     @Value("${kafka.consumer.enable-auto-commit}")
     private String enableAutoCommit;

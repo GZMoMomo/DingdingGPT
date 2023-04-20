@@ -45,8 +45,20 @@ public class mainSend {
      */
     @RequestMapping(value="/getMsg",method= RequestMethod.POST)
     public void getMsgAndSend(@RequestBody(required = false) JSONObject json) throws IOException {
-        //放入消息队列
+        System.out.println(json.toString());
         kafkaProducerSerivce.sendMessage(json);
+    }
+
+    /**
+     * 接入向量库milvus
+     * 接受钉钉@发送的json对象，将json对象交由server层处理
+     * @param json 钉钉@发送的json对象
+     * @throws IOException
+     */
+    @RequestMapping(value="/getMsgKnowledge",method= RequestMethod.POST)
+    public void getMsgAndSendKnowledge(@RequestBody(required = false) JSONObject json) throws IOException {
+        System.out.println(json.toString());
+        kafkaProducerSerivce.sendMessageKnowledge(json);
     }
 
     /**

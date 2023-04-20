@@ -8,6 +8,7 @@ import okhttp3.sse.EventSourceListener;
 import okhttp3.sse.EventSources;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,6 +20,15 @@ import java.util.concurrent.TimeUnit;
 
 @Service    //SSE流式处理response
 public class HttpSseUtils {
+    @Autowired
+    HttpUtils httpUtils;
+
+    //GPT API地址，使用了代理服务器
+    public static final String url = "https://mokjyz.xyz/v1/chat/completions";
+    //GPTAPI Image
+    public static final String urlImage = "https://mokjyz.xyz/v1/images/generations";
+    // GPT API TOKEN
+    public static final String token = "sk-*" ;
 
     // 私有构造函数
     private HttpSseUtils() {}
@@ -39,12 +49,6 @@ public class HttpSseUtils {
     //静态媒体类型，用来描述请求和响应消息的格式和字符集。
     private static final MediaType JSON = MediaType.get("application/json;chartset=utf-8");
 
-    //GPT API地址，使用了代理服务器
-    public static final String url = "https://mokjyz.xyz/v1/chat/completions";
-    //GPTAPI Image
-    public static final String urlImage = "https://mokjyz.xyz/v1/images/generations";
-    // GPT API TOKEN
-    public static final String token = "sk-*" ;
 
     public void postStream(String url, JSONObject jsonObject , String apiKey, user_send user){
         // 定义see接口

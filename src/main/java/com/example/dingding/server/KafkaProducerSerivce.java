@@ -42,7 +42,7 @@ public class KafkaProducerSerivce {
      */
     public void sendMessage(JSONObject json){
         //获取前方还有多少条数据要消费
-        long log=kafkaConsumerService.lagOf();
+        long log=kafkaConsumerService.lagOf_usersend();
         user_send user=new user_send();
         user.setuser(json);
         //要消费的数据条数 * 平均每条数据消费时间=预估需要等待多久
@@ -55,6 +55,37 @@ public class KafkaProducerSerivce {
             String message= parseJson.toJson(user);
             //发送数据
             ProducerRecord<String, String> record=new ProducerRecord<>("user_send2",message);
+            producer.send(record,(metadata,exception)->{
+                if(exception!= null){
+                    exception.printStackTrace();
+                    sendMsg.freeText(user,"系统出现严重错误！请管理员尽快修复！用户请耐心等待~");
+                }
+            });
+        }catch (Exception e){
+            sendMsg.freeText(user,"系统出现严重错误！请管理员尽快修复！用户请耐心等待~");
+        }
+    }
+
+    /**
+     * 接入向量库milvus
+     * kafka生产者发送信息
+     * @param json 钉钉接受的jsonObject
+     */
+    public void sendMessageKnowledge(JSONObject json){
+        //获取前方还有多少条数据要消费
+        long log=kafkaConsumerService.lagOf_knowledge();
+        user_send user=new user_send();
+        user.setuser(json);
+        //要消费的数据条数 * 平均每条数据消费时间=预估需要等待多久
+        double queueTime=getQueueTimeAvg()*log;
+        //需要等待的秒数小于1的不显示
+        if(!(queueTime<=1 || Double.isNaN(queueTime) || "0.00".equals(String.format("%.2f", queueTime))) ){
+            sendMsg.freeText(user,"排队中~预计等待时间为："+String.format("%.0f", queueTime)+"秒");
+        }
+        try{
+            String message= parseJson.toJson(user);
+            //发送数据
+            ProducerRecord<String, String> record=new ProducerRecord<>("knowledge",message);
             producer.send(record,(metadata,exception)->{
                 if(exception!= null){
                     exception.printStackTrace();
@@ -104,7 +135,7 @@ public class KafkaProducerSerivce {
 
 
     public void sendtest(String json){
-        long log=kafkaConsumerService.lagOf();
+        long log=kafkaConsumerService.lagOf_usersend();
         double queueTime=getQueueTimeAvg()*log;
         if(!(queueTime<=1 || Double.isNaN(queueTime) || "0.00".equals(String.format("%.2f", queueTime))) ){
 

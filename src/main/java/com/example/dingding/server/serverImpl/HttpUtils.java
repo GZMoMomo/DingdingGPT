@@ -40,6 +40,8 @@ public class HttpUtils {
     public static final String url = "https://mokjyz.xyz/v1/chat/completions";
     //GPTAPI Image
     public static final String urlImage = "https://mokjyz.xyz/v1/images/generations";
+    //GPTAPI Embedding
+    public static final String urlEmbedding = "https://mokjyz.xyz/v1/embeddings";
     // GPT API TOKEN
     public static final String token = "sk-**" ;
 
@@ -62,7 +64,8 @@ public class HttpUtils {
         try (Response response = getClient().newCall(request).execute()){
             if(!response.isSuccessful()){
                 sendMsg sendMsg=new sendMsg();
-                sendMsg.freeText(user,"ops!由于网络拥堵，来自大洋彼岸的回复丢失了！请稍后再试，若长时间失败，我的管理员正在奋力修复中，请耐心等待~");
+                sendMsg.freeText(user,"ops!由于网络拥堵，来自大洋彼岸的回复丢失了！请等待5秒钟后再试，若长时间失败，我的管理员正在奋力修复中，请耐心等待~");
+                Thread.sleep(5000);
                 throw new IOException("Unexpected code: "+response);
             }
             ResponseBody responseBody=response.body();
